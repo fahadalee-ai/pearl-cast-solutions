@@ -1,8 +1,10 @@
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Lock } from "lucide-react";
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import authClinic from "@/img/auth-clinic.jpg";
+import logo from "@/img/logo.png";
 import { Field, inputClass } from "@/components/kit";
+import { cn } from "@/lib/utils";
 
 export function AuthShell({
   title,
@@ -16,27 +18,42 @@ export function AuthShell({
   children: ReactNode;
   footer?: ReactNode;
   showBack?: boolean;
+  showLogo?: boolean;
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
 
   return (
-    <div className="relative min-h-dvh bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-      {showBack && (
-        <button
-          type="button"
-          aria-label="Go back"
-          onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/" }))}
-          className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-card text-foreground"
-        >
-          <ArrowLeft size={18} strokeWidth={2} />
-        </button>
-      )}
+    <div className="flex min-h-dvh flex-col bg-background">
+      <div className="relative h-[32vh] min-h-[210px] overflow-hidden">
+        <img src={authClinic} alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-[#211b2e]/45 to-[#211b2e]/55" />
+        <div className="relative z-10 flex h-full flex-col px-5 pt-[max(1rem,env(safe-area-inset-top))]">
+          {showBack ? (
+            <button
+              type="button"
+              aria-label="Go back"
+              onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/login" }))}
+              className="flex h-11 w-11 items-center justify-center border border-white/30 bg-black/25 text-white"
+            >
+              <ArrowLeft size={18} strokeWidth={2} />
+            </button>
+          ) : (
+            <span />
+          )}
+          <div className="mt-auto pb-5">
+            <img src={logo} alt="Pearl Cast Solutions" className="h-16 w-16 object-contain" />
+          </div>
+        </div>
+      </div>
 
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
-      {subtitle && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>}
-      <div className="mt-6">{children}</div>
-      {footer}
+      <div className="flex-1 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-mauve">Pearl Cast Solutions</p>
+        <h1 className="mt-2 font-display text-[30px] font-semibold tracking-tight text-foreground">{title}</h1>
+        {subtitle && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>}
+        <div className="mt-6">{children}</div>
+        {footer}
+      </div>
     </div>
   );
 }
@@ -49,7 +66,9 @@ export function AuthInput({
   return (
     <div className="relative">
       {icon && (
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">{icon}</span>
+        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+          {icon}
+        </span>
       )}
       <input {...props} className={cn(inputClass, icon && "pl-10", className)} />
     </div>
@@ -92,31 +111,27 @@ export function SocialAuth({ onContinue }: { onContinue: () => void }) {
         or continue with
         <span className="h-px flex-1 bg-border" />
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={onContinue}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold text-foreground hover:bg-muted"
-        >
-          <GoogleMark />
-          Google
-        </button>
-        <button
-          type="button"
-          onClick={onContinue}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold text-foreground hover:bg-muted"
-        >
+      <div className="grid grid-cols-3 gap-3">
+        <button type="button" onClick={onContinue} className={socialClass} aria-label="Continue with Apple">
           <AppleMark />
-          Apple
+        </button>
+        <button type="button" onClick={onContinue} className={socialClass} aria-label="Continue with Google">
+          <GoogleMark />
+        </button>
+        <button type="button" onClick={onContinue} className={socialClass} aria-label="Continue with Face ID">
+          <FaceMark />
         </button>
       </div>
     </>
   );
 }
 
+const socialClass =
+  "inline-flex min-h-12 items-center justify-center border border-border bg-card text-foreground";
+
 function GoogleMark() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
       <path
         fill="#4285F4"
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"
@@ -139,8 +154,19 @@ function GoogleMark() {
 
 function AppleMark() {
   return (
-    <svg width="14" height="16" viewBox="0 0 14 17" fill="currentColor" aria-hidden>
+    <svg width="16" height="18" viewBox="0 0 14 17" fill="currentColor" aria-hidden>
       <path d="M11.46 8.84c.02 2.2 1.93 2.93 1.95 2.94-.02.05-.3 1.05-1 2.06-.6.87-1.23 1.73-2.21 1.75-.96.02-1.27-.57-2.37-.57-1.1 0-1.44.55-2.35.59-.94.04-1.66-.94-2.27-1.8C1.92 12.02.7 8.9 2.02 6.78c.65-1.05 1.82-1.72 3.09-1.74.96-.02 1.87.65 2.37.65.5 0 1.61-.8 2.72-.68.46.02 1.76.19 2.59 1.41-.07.04-1.55.9-1.33 2.42ZM9.7 2.7c.52-.63.87-1.5.77-2.37-.75.03-1.65.5-2.19 1.13-.48.55-.9 1.44-.79 2.28.83.06 1.69-.42 2.21-1.04Z" />
+    </svg>
+  );
+}
+
+function FaceMark() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+      <path d="M8 4H6a2 2 0 0 0-2 2v2M16 4h2a2 2 0 0 1 2 2v2M8 20H6a2 2 0 0 1-2-2v-2M16 20h2a2 2 0 0 0 2-2v-2" />
+      <circle cx="9" cy="10" r="1" fill="currentColor" />
+      <circle cx="15" cy="10" r="1" fill="currentColor" />
+      <path d="M9 15c.8.8 1.8 1.2 3 1.2s2.2-.4 3-1.2" />
     </svg>
   );
 }

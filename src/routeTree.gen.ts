@@ -10,33 +10,400 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as AppHomeRouteImport } from './routes/_app/home'
+import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
+import { Route as AppAppointmentsIndexRouteImport } from './routes/_app/appointments/index'
+import { Route as AppAppointmentsIdRouteImport } from './routes/_app/appointments/$id'
+import { Route as AppAppointmentsBookRouteImport } from './routes/_app/appointments/book'
+import { Route as AppDocumentsIndexRouteImport } from './routes/_app/documents/index'
+import { Route as AppDocumentsIdRouteImport } from './routes/_app/documents/$id'
+import { Route as AppDocumentsUploadRouteImport } from './routes/_app/documents/upload'
+import { Route as AppFormsIndexRouteImport } from './routes/_app/forms/index'
+import { Route as AppFormsIdRouteImport } from './routes/_app/forms/$id'
+import { Route as AppMedicationsIndexRouteImport } from './routes/_app/medications/index'
+import { Route as AppMedicationsIdRouteImport } from './routes/_app/medications/$id'
+import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
+import { Route as AppMessagesIdRouteImport } from './routes/_app/messages/$id'
+import { Route as AppMessagesNewRouteImport } from './routes/_app/messages/new'
+import { Route as AppPaymentsIndexRouteImport } from './routes/_app/payments/index'
+import { Route as AppPaymentsIdRouteImport } from './routes/_app/payments/$id'
+import { Route as AppPaymentsHistoryRouteImport } from './routes/_app/payments/history'
+import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
+import { Route as AppProfileInsuranceRouteImport } from './routes/_app/profile/insurance'
+import { Route as AppProfilePaymentMethodsRouteImport } from './routes/_app/profile/payment-methods'
+import { Route as AppProfilePersonalRouteImport } from './routes/_app/profile/personal'
+import { Route as AppProfileSettingsRouteImport } from './routes/_app/profile/settings'
+import { Route as AppAppointmentsIdRescheduleRouteImport } from './routes/_app/appointments/$id.reschedule'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppHomeRoute = AppHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppointmentsIndexRoute = AppAppointmentsIndexRouteImport.update({
+  id: '/appointments/',
+  path: '/appointments/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppointmentsIdRoute = AppAppointmentsIdRouteImport.update({
+  id: '/appointments/$id',
+  path: '/appointments/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppointmentsBookRoute = AppAppointmentsBookRouteImport.update({
+  id: '/appointments/book',
+  path: '/appointments/book',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
+  id: '/documents/',
+  path: '/documents/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsIdRoute = AppDocumentsIdRouteImport.update({
+  id: '/documents/$id',
+  path: '/documents/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsUploadRoute = AppDocumentsUploadRouteImport.update({
+  id: '/documents/upload',
+  path: '/documents/upload',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFormsIndexRoute = AppFormsIndexRouteImport.update({
+  id: '/forms/',
+  path: '/forms/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFormsIdRoute = AppFormsIdRouteImport.update({
+  id: '/forms/$id',
+  path: '/forms/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMedicationsIndexRoute = AppMedicationsIndexRouteImport.update({
+  id: '/medications/',
+  path: '/medications/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMedicationsIdRoute = AppMedicationsIdRouteImport.update({
+  id: '/medications/$id',
+  path: '/medications/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesIdRoute = AppMessagesIdRouteImport.update({
+  id: '/messages/$id',
+  path: '/messages/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesNewRoute = AppMessagesNewRouteImport.update({
+  id: '/messages/new',
+  path: '/messages/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPaymentsIndexRoute = AppPaymentsIndexRouteImport.update({
+  id: '/payments/',
+  path: '/payments/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPaymentsIdRoute = AppPaymentsIdRouteImport.update({
+  id: '/payments/$id',
+  path: '/payments/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPaymentsHistoryRoute = AppPaymentsHistoryRouteImport.update({
+  id: '/payments/history',
+  path: '/payments/history',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileInsuranceRoute = AppProfileInsuranceRouteImport.update({
+  id: '/profile/insurance',
+  path: '/profile/insurance',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfilePaymentMethodsRoute =
+  AppProfilePaymentMethodsRouteImport.update({
+    id: '/profile/payment-methods',
+    path: '/profile/payment-methods',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppProfilePersonalRoute = AppProfilePersonalRouteImport.update({
+  id: '/profile/personal',
+  path: '/profile/personal',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileSettingsRoute = AppProfileSettingsRouteImport.update({
+  id: '/profile/settings',
+  path: '/profile/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppointmentsIdRescheduleRoute =
+  AppAppointmentsIdRescheduleRouteImport.update({
+    id: '/reschedule',
+    path: '/reschedule',
+    getParentRoute: () => AppAppointmentsIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/verify': typeof VerifyRoute
+  '/home': typeof AppHomeRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/appointments/$id': typeof AppAppointmentsIdRouteWithChildren
+  '/appointments/book': typeof AppAppointmentsBookRoute
+  '/documents/$id': typeof AppDocumentsIdRoute
+  '/documents/upload': typeof AppDocumentsUploadRoute
+  '/forms/$id': typeof AppFormsIdRoute
+  '/medications/$id': typeof AppMedicationsIdRoute
+  '/messages/$id': typeof AppMessagesIdRoute
+  '/messages/new': typeof AppMessagesNewRoute
+  '/payments/$id': typeof AppPaymentsIdRoute
+  '/payments/history': typeof AppPaymentsHistoryRoute
+  '/profile/insurance': typeof AppProfileInsuranceRoute
+  '/profile/payment-methods': typeof AppProfilePaymentMethodsRoute
+  '/profile/personal': typeof AppProfilePersonalRoute
+  '/profile/settings': typeof AppProfileSettingsRoute
+  '/appointments/': typeof AppAppointmentsIndexRoute
+  '/documents/': typeof AppDocumentsIndexRoute
+  '/forms/': typeof AppFormsIndexRoute
+  '/medications/': typeof AppMedicationsIndexRoute
+  '/messages/': typeof AppMessagesIndexRoute
+  '/payments/': typeof AppPaymentsIndexRoute
+  '/profile/': typeof AppProfileIndexRoute
+  '/appointments/$id/reschedule': typeof AppAppointmentsIdRescheduleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/verify': typeof VerifyRoute
+  '/home': typeof AppHomeRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/appointments/$id': typeof AppAppointmentsIdRouteWithChildren
+  '/appointments/book': typeof AppAppointmentsBookRoute
+  '/documents/$id': typeof AppDocumentsIdRoute
+  '/documents/upload': typeof AppDocumentsUploadRoute
+  '/forms/$id': typeof AppFormsIdRoute
+  '/medications/$id': typeof AppMedicationsIdRoute
+  '/messages/$id': typeof AppMessagesIdRoute
+  '/messages/new': typeof AppMessagesNewRoute
+  '/payments/$id': typeof AppPaymentsIdRoute
+  '/payments/history': typeof AppPaymentsHistoryRoute
+  '/profile/insurance': typeof AppProfileInsuranceRoute
+  '/profile/payment-methods': typeof AppProfilePaymentMethodsRoute
+  '/profile/personal': typeof AppProfilePersonalRoute
+  '/profile/settings': typeof AppProfileSettingsRoute
+  '/appointments': typeof AppAppointmentsIndexRoute
+  '/documents': typeof AppDocumentsIndexRoute
+  '/forms': typeof AppFormsIndexRoute
+  '/medications': typeof AppMedicationsIndexRoute
+  '/messages': typeof AppMessagesIndexRoute
+  '/payments': typeof AppPaymentsIndexRoute
+  '/profile': typeof AppProfileIndexRoute
+  '/appointments/$id/reschedule': typeof AppAppointmentsIdRescheduleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/verify': typeof VerifyRoute
+  '/_app/home': typeof AppHomeRoute
+  '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/appointments/$id': typeof AppAppointmentsIdRouteWithChildren
+  '/_app/appointments/book': typeof AppAppointmentsBookRoute
+  '/_app/documents/$id': typeof AppDocumentsIdRoute
+  '/_app/documents/upload': typeof AppDocumentsUploadRoute
+  '/_app/forms/$id': typeof AppFormsIdRoute
+  '/_app/medications/$id': typeof AppMedicationsIdRoute
+  '/_app/messages/$id': typeof AppMessagesIdRoute
+  '/_app/messages/new': typeof AppMessagesNewRoute
+  '/_app/payments/$id': typeof AppPaymentsIdRoute
+  '/_app/payments/history': typeof AppPaymentsHistoryRoute
+  '/_app/profile/insurance': typeof AppProfileInsuranceRoute
+  '/_app/profile/payment-methods': typeof AppProfilePaymentMethodsRoute
+  '/_app/profile/personal': typeof AppProfilePersonalRoute
+  '/_app/profile/settings': typeof AppProfileSettingsRoute
+  '/_app/appointments/': typeof AppAppointmentsIndexRoute
+  '/_app/documents/': typeof AppDocumentsIndexRoute
+  '/_app/forms/': typeof AppFormsIndexRoute
+  '/_app/medications/': typeof AppMedicationsIndexRoute
+  '/_app/messages/': typeof AppMessagesIndexRoute
+  '/_app/payments/': typeof AppPaymentsIndexRoute
+  '/_app/profile/': typeof AppProfileIndexRoute
+  '/_app/appointments/$id/reschedule': typeof AppAppointmentsIdRescheduleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
+    | '/verify'
+    | '/home'
+    | '/notifications'
+    | '/appointments/$id'
+    | '/appointments/book'
+    | '/documents/$id'
+    | '/documents/upload'
+    | '/forms/$id'
+    | '/medications/$id'
+    | '/messages/$id'
+    | '/messages/new'
+    | '/payments/$id'
+    | '/payments/history'
+    | '/profile/insurance'
+    | '/profile/payment-methods'
+    | '/profile/personal'
+    | '/profile/settings'
+    | '/appointments/'
+    | '/documents/'
+    | '/forms/'
+    | '/medications/'
+    | '/messages/'
+    | '/payments/'
+    | '/profile/'
+    | '/appointments/$id/reschedule'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
+    | '/verify'
+    | '/home'
+    | '/notifications'
+    | '/appointments/$id'
+    | '/appointments/book'
+    | '/documents/$id'
+    | '/documents/upload'
+    | '/forms/$id'
+    | '/medications/$id'
+    | '/messages/$id'
+    | '/messages/new'
+    | '/payments/$id'
+    | '/payments/history'
+    | '/profile/insurance'
+    | '/profile/payment-methods'
+    | '/profile/personal'
+    | '/profile/settings'
+    | '/appointments'
+    | '/documents'
+    | '/forms'
+    | '/medications'
+    | '/messages'
+    | '/payments'
+    | '/profile'
+    | '/appointments/$id/reschedule'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/forgot-password'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
+    | '/verify'
+    | '/_app/home'
+    | '/_app/notifications'
+    | '/_app/appointments/$id'
+    | '/_app/appointments/book'
+    | '/_app/documents/$id'
+    | '/_app/documents/upload'
+    | '/_app/forms/$id'
+    | '/_app/medications/$id'
+    | '/_app/messages/$id'
+    | '/_app/messages/new'
+    | '/_app/payments/$id'
+    | '/_app/payments/history'
+    | '/_app/profile/insurance'
+    | '/_app/profile/payment-methods'
+    | '/_app/profile/personal'
+    | '/_app/profile/settings'
+    | '/_app/appointments/'
+    | '/_app/documents/'
+    | '/_app/forms/'
+    | '/_app/medications/'
+    | '/_app/messages/'
+    | '/_app/payments/'
+    | '/_app/profile/'
+    | '/_app/appointments/$id/reschedule'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
+  SignupRoute: typeof SignupRoute
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +415,292 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/home': {
+      id: '/_app/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AppHomeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/appointments/': {
+      id: '/_app/appointments/'
+      path: '/appointments'
+      fullPath: '/appointments/'
+      preLoaderRoute: typeof AppAppointmentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/appointments/$id': {
+      id: '/_app/appointments/$id'
+      path: '/appointments/$id'
+      fullPath: '/appointments/$id'
+      preLoaderRoute: typeof AppAppointmentsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/appointments/book': {
+      id: '/_app/appointments/book'
+      path: '/appointments/book'
+      fullPath: '/appointments/book'
+      preLoaderRoute: typeof AppAppointmentsBookRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/documents/': {
+      id: '/_app/documents/'
+      path: '/documents'
+      fullPath: '/documents/'
+      preLoaderRoute: typeof AppDocumentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/documents/$id': {
+      id: '/_app/documents/$id'
+      path: '/documents/$id'
+      fullPath: '/documents/$id'
+      preLoaderRoute: typeof AppDocumentsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/documents/upload': {
+      id: '/_app/documents/upload'
+      path: '/documents/upload'
+      fullPath: '/documents/upload'
+      preLoaderRoute: typeof AppDocumentsUploadRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/forms/': {
+      id: '/_app/forms/'
+      path: '/forms'
+      fullPath: '/forms/'
+      preLoaderRoute: typeof AppFormsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/forms/$id': {
+      id: '/_app/forms/$id'
+      path: '/forms/$id'
+      fullPath: '/forms/$id'
+      preLoaderRoute: typeof AppFormsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/medications/': {
+      id: '/_app/medications/'
+      path: '/medications'
+      fullPath: '/medications/'
+      preLoaderRoute: typeof AppMedicationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/medications/$id': {
+      id: '/_app/medications/$id'
+      path: '/medications/$id'
+      fullPath: '/medications/$id'
+      preLoaderRoute: typeof AppMedicationsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages/': {
+      id: '/_app/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AppMessagesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages/$id': {
+      id: '/_app/messages/$id'
+      path: '/messages/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof AppMessagesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages/new': {
+      id: '/_app/messages/new'
+      path: '/messages/new'
+      fullPath: '/messages/new'
+      preLoaderRoute: typeof AppMessagesNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/payments/': {
+      id: '/_app/payments/'
+      path: '/payments'
+      fullPath: '/payments/'
+      preLoaderRoute: typeof AppPaymentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/payments/$id': {
+      id: '/_app/payments/$id'
+      path: '/payments/$id'
+      fullPath: '/payments/$id'
+      preLoaderRoute: typeof AppPaymentsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/payments/history': {
+      id: '/_app/payments/history'
+      path: '/payments/history'
+      fullPath: '/payments/history'
+      preLoaderRoute: typeof AppPaymentsHistoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/': {
+      id: '/_app/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AppProfileIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/insurance': {
+      id: '/_app/profile/insurance'
+      path: '/profile/insurance'
+      fullPath: '/profile/insurance'
+      preLoaderRoute: typeof AppProfileInsuranceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/payment-methods': {
+      id: '/_app/profile/payment-methods'
+      path: '/profile/payment-methods'
+      fullPath: '/profile/payment-methods'
+      preLoaderRoute: typeof AppProfilePaymentMethodsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/personal': {
+      id: '/_app/profile/personal'
+      path: '/profile/personal'
+      fullPath: '/profile/personal'
+      preLoaderRoute: typeof AppProfilePersonalRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/settings': {
+      id: '/_app/profile/settings'
+      path: '/profile/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof AppProfileSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/appointments/$id/reschedule': {
+      id: '/_app/appointments/$id/reschedule'
+      path: '/reschedule'
+      fullPath: '/appointments/$id/reschedule'
+      preLoaderRoute: typeof AppAppointmentsIdRescheduleRouteImport
+      parentRoute: typeof AppAppointmentsIdRoute
+    }
   }
 }
 
+interface AppAppointmentsIdRouteChildren {
+  AppAppointmentsIdRescheduleRoute: typeof AppAppointmentsIdRescheduleRoute
+}
+
+const AppAppointmentsIdRouteChildren: AppAppointmentsIdRouteChildren = {
+  AppAppointmentsIdRescheduleRoute: AppAppointmentsIdRescheduleRoute,
+}
+
+const AppAppointmentsIdRouteWithChildren =
+  AppAppointmentsIdRoute._addFileChildren(AppAppointmentsIdRouteChildren)
+
+interface AppRouteChildren {
+  AppHomeRoute: typeof AppHomeRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppAppointmentsIdRoute: typeof AppAppointmentsIdRouteWithChildren
+  AppAppointmentsBookRoute: typeof AppAppointmentsBookRoute
+  AppDocumentsIdRoute: typeof AppDocumentsIdRoute
+  AppDocumentsUploadRoute: typeof AppDocumentsUploadRoute
+  AppFormsIdRoute: typeof AppFormsIdRoute
+  AppMedicationsIdRoute: typeof AppMedicationsIdRoute
+  AppMessagesIdRoute: typeof AppMessagesIdRoute
+  AppMessagesNewRoute: typeof AppMessagesNewRoute
+  AppPaymentsIdRoute: typeof AppPaymentsIdRoute
+  AppPaymentsHistoryRoute: typeof AppPaymentsHistoryRoute
+  AppProfileInsuranceRoute: typeof AppProfileInsuranceRoute
+  AppProfilePaymentMethodsRoute: typeof AppProfilePaymentMethodsRoute
+  AppProfilePersonalRoute: typeof AppProfilePersonalRoute
+  AppProfileSettingsRoute: typeof AppProfileSettingsRoute
+  AppAppointmentsIndexRoute: typeof AppAppointmentsIndexRoute
+  AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
+  AppFormsIndexRoute: typeof AppFormsIndexRoute
+  AppMedicationsIndexRoute: typeof AppMedicationsIndexRoute
+  AppMessagesIndexRoute: typeof AppMessagesIndexRoute
+  AppPaymentsIndexRoute: typeof AppPaymentsIndexRoute
+  AppProfileIndexRoute: typeof AppProfileIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppHomeRoute: AppHomeRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppAppointmentsIdRoute: AppAppointmentsIdRouteWithChildren,
+  AppAppointmentsBookRoute: AppAppointmentsBookRoute,
+  AppDocumentsIdRoute: AppDocumentsIdRoute,
+  AppDocumentsUploadRoute: AppDocumentsUploadRoute,
+  AppFormsIdRoute: AppFormsIdRoute,
+  AppMedicationsIdRoute: AppMedicationsIdRoute,
+  AppMessagesIdRoute: AppMessagesIdRoute,
+  AppMessagesNewRoute: AppMessagesNewRoute,
+  AppPaymentsIdRoute: AppPaymentsIdRoute,
+  AppPaymentsHistoryRoute: AppPaymentsHistoryRoute,
+  AppProfileInsuranceRoute: AppProfileInsuranceRoute,
+  AppProfilePaymentMethodsRoute: AppProfilePaymentMethodsRoute,
+  AppProfilePersonalRoute: AppProfilePersonalRoute,
+  AppProfileSettingsRoute: AppProfileSettingsRoute,
+  AppAppointmentsIndexRoute: AppAppointmentsIndexRoute,
+  AppDocumentsIndexRoute: AppDocumentsIndexRoute,
+  AppFormsIndexRoute: AppFormsIndexRoute,
+  AppMedicationsIndexRoute: AppMedicationsIndexRoute,
+  AppMessagesIndexRoute: AppMessagesIndexRoute,
+  AppPaymentsIndexRoute: AppPaymentsIndexRoute,
+  AppProfileIndexRoute: AppProfileIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
+  SignupRoute: SignupRoute,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

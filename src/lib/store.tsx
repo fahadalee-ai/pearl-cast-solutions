@@ -1,75 +1,69 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { clearStorage, readStorage, writeStorage } from "./storage";
 import {
-  seedActivity,
-  seedCompliance,
+  seedAppointments,
+  seedBills,
+  seedConversations,
   seedDocuments,
-  seedFieldwork,
   seedForms,
+  seedMedications,
   seedNotifications,
-  seedSupervisor,
-  seedTemplates,
-  seedUsers,
-  type ActivityItem,
+  seedPaymentMethods,
+  seedProviders,
+  seedUser,
+  type Appointment,
   type AppDocument,
   type AppNotification,
-  type ComplianceItem,
-  type FieldworkEntry,
-  type FormRecord,
-  type FormTemplate,
-  type Role,
-  type SupervisionSession,
-  type Supervisor,
+  type Bill,
+  type Conversation,
+  type Medication,
+  type PatientForm,
+  type PaymentMethod,
+  type Provider,
   type User,
-  seedSupervision,
 } from "./mock-data";
 
 export type Toast = { id: number; title: string; body?: string };
 
 type Prefs = {
-  "Supervision reminders": boolean;
-  "Compliance deadlines": boolean;
-  "Document expirations": boolean;
-  "Pending approvals": boolean;
+  push: boolean;
+  email: boolean;
+  sms: boolean;
+  biometric: boolean;
+  darkMode: boolean;
 };
 
 type Store = {
-  users: User[];
+  hydrated: boolean;
   user: User | null;
   onboarded: boolean;
+  providers: Provider[];
   markOnboarded: () => void;
-  login: (email: string, password: string) => { ok: true } | { ok: false; reason: "invalid" | "admin" };
-  register: (input: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    bacbNumber?: string;
-    password: string;
-    role: Role;
-  }) => { ok: true; email: string } | { ok: false; reason: "exists" };
+  login: (email: string, password: string) => { ok: true } | { ok: false };
+  register: (input: Pick<User, "firstName" | "lastName" | "email" | "phone" | "password">) =>
+    | { ok: true }
+    | { ok: false; reason: "exists" };
   logout: () => void;
   updateUser: (patch: Partial<User>) => void;
-  supervisor: Supervisor;
-  fieldwork: FieldworkEntry[];
-  addFieldwork: (entry: Omit<FieldworkEntry, "id" | "status">) => void;
-  updateFieldwork: (id: string, patch: Partial<FieldworkEntry>) => void;
-  removeFieldwork: (id: string) => void;
-  supervision: SupervisionSession[];
-  addSupervision: (entry: Omit<SupervisionSession, "id">) => void;
-  compliance: ComplianceItem[];
-  toggleRemind: (id: string) => void;
+  appointments: Appointment[];
+  addAppointment: (entry: Omit<Appointment, "id" | "status">) => Appointment;
+  updateAppointment: (id: string, patch: Partial<Appointment>) => void;
+  medications: Medication[];
+  requestRefill: (id: string) => void;
+  forms: PatientForm[];
+  saveForm: (id: string, values: Record<string, string>, status?: PatientForm["status"]) => void;
+  conversations: Conversation[];
+  sendMessage: (conversationId: string, text: string) => void;
+  startConversation: (providerId: string, text: string) => string;
   documents: AppDocument[];
-  addDocument: (doc: Omit<AppDocument, "id" | "status" | "uploadedAt"> & { status?: AppDocument["status"] }) => void;
-  replaceDocument: (id: string, name: string) => void;
-  removeDocument: (id: string) => void;
-  templates: FormTemplate[];
-  forms: FormRecord[];
-  submitForm: (record: Omit<FormRecord, "id" | "status" | "submittedAt">) => void;
+  addDocument: (doc: Omit<AppDocument, "id" | "date">) => void;
   notifications: AppNotification[];
   markAllRead: () => void;
   markNotificationRead: (id: string) => void;
-  activity: ActivityItem[];
+  dismissNotification: (id: string) => void;
+  bills: Bill[];
+  payBill: (id: string, amount: number) => void;
+  paymentMethods: PaymentMethod[];
   prefs: Prefs;
   togglePref: (key: keyof Prefs) => void;
   toasts: Toast[];
@@ -80,31 +74,36 @@ type Store = {
 const Ctx = createContext<Store | null>(null);
 
 const DEFAULT_PREFS: Prefs = {
-  "Supervision reminders": true,
-  "Compliance deadlines": true,
-  "Document expirations": true,
-  "Pending approvals": true,
+  push: true,
+  email: true,
+  sms: true,
+  biometric: false,
+  darkMode: false,
 };
 
-function loadSessionUser(users: User[]): User | null {
-  const id = readStorage("session");
-  if (!id) return null;
-  return users.find((u) => u.id === id) ?? null;
-}
-
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [users, setUsers] = useState<User[]>(seedUsers);
-  const [user, setUser] = useState<User | null>(() => loadSessionUser(seedUsers));
-  const [onboarded, setOnboarded] = useState(() => readStorage("onboarded") === "1");
-  const [fieldwork, setFieldwork] = useState(seedFieldwork);
-  const [supervision, setSupervision] = useState(seedSupervision);
-  const [compliance, setCompliance] = useState(seedCompliance);
-  const [documents, setDocuments] = useState(seedDocuments);
+  const [hydrated, setHydrated] = useState(false);
+  const [users, setUsers] = useState<User[]>([seedUser]);
+  const [user, setUser] = useState<User | null>(null);
+  const [onboarded, setOnboarded] = useState(false);
+  const [appointments, setAppointments] = useState(seedAppointments);
+  const [medications] = useState(seedMedications);
   const [forms, setForms] = useState(seedForms);
+  const [conversations, setConversations] = useState(seedConversations);
+  const [documents, setDocuments] = useState(seedDocuments);
   const [notifications, setNotifications] = useState(seedNotifications);
-  const [activity, setActivity] = useState(seedActivity);
+  const [bills, setBills] = useState(seedBills);
+  const [paymentMethods] = useState(seedPaymentMethods);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
   const [toasts, setToasts] = useState<Toast[]>([]);
+
+  useEffect(() => {
+    const id = readStorage("session");
+    const found = id ? users.find((u) => u.id === id) ?? null : null;
+    setUser(found);
+    setOnboarded(readStorage("onboarded") === "1");
+    setHydrated(true);
+  }, [users]);
 
   const value = useMemo<Store>(() => {
     const pushToast = (title: string, body?: string) => {
@@ -114,17 +113,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
 
     return {
-      users,
+      hydrated,
       user,
       onboarded,
+      providers: seedProviders,
       markOnboarded: () => {
         setOnboarded(true);
         writeStorage("onboarded", "1");
       },
       login: (email, password) => {
         const found = users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
-        if (!found || found.password !== password) return { ok: false, reason: "invalid" };
-        if (found.role === "admin") return { ok: false, reason: "admin" };
+        if (!found || found.password !== password) return { ok: false };
         setUser(found);
         writeStorage("session", found.id);
         writeStorage("onboarded", "1");
@@ -136,19 +135,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
           return { ok: false, reason: "exists" };
         }
         const created: User = {
+          ...seedUser,
+          ...input,
           id: `u${Date.now()}`,
+          email: input.email.trim().toLowerCase(),
           firstName: input.firstName.trim(),
           lastName: input.lastName.trim(),
-          email: input.email.trim().toLowerCase(),
-          phone: input.phone.trim(),
-          password: input.password,
-          role: input.role,
-          bacbNumber: input.bacbNumber?.trim() || undefined,
+          patientId: `PCS-${Math.floor(10000 + Math.random() * 89999)}`,
         };
         setUsers((list) => [...list, created]);
+        setUser(created);
+        writeStorage("session", created.id);
         writeStorage("onboarded", "1");
         setOnboarded(true);
-        return { ok: true, email: created.email };
+        return { ok: true };
       },
       logout: () => {
         setUser(null);
@@ -160,69 +160,96 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setUser(next);
         setUsers((list) => list.map((u) => (u.id === next.id ? next : u)));
       },
-      supervisor: seedSupervisor,
-      fieldwork,
-      addFieldwork: (entry) => {
-        const next: FieldworkEntry = { ...entry, id: `fw${Date.now()}`, status: "pending" };
-        setFieldwork((list) => [next, ...list]);
-        setActivity((list) => [
-          { id: `a${Date.now()}`, text: `Fieldwork logged — ${entry.hours.toFixed(1)} hrs`, time: "Just now", tone: "orange" },
-          ...list,
-        ]);
-        pushToast("Fieldwork entry saved");
+      appointments,
+      addAppointment: (entry) => {
+        const next: Appointment = { ...entry, id: `a${Date.now()}`, status: "Confirmed" };
+        setAppointments((list) => [next, ...list]);
+        pushToast("Appointment booked");
+        return next;
       },
-      updateFieldwork: (id, patch) => setFieldwork((list) => list.map((e) => (e.id === id ? { ...e, ...patch } : e))),
-      removeFieldwork: (id) => setFieldwork((list) => list.filter((e) => e.id !== id)),
-      supervision,
-      addSupervision: (entry) => {
-        setSupervision((list) => [{ ...entry, id: `sv${Date.now()}` }, ...list]);
-        pushToast(entry.status === "requested" ? "Session requested" : "Submitted for sign-off");
+      updateAppointment: (id, patch) =>
+        setAppointments((list) => list.map((a) => (a.id === id ? { ...a, ...patch } : a))),
+      medications,
+      requestRefill: () => pushToast("Refill requested", "Your pharmacy will have this ready in 1–2 days."),
+      forms,
+      saveForm: (id, values, status) =>
+        setForms((list) =>
+          list.map((f) => (f.id === id ? { ...f, values, status: status ?? f.status } : f)),
+        ),
+      conversations,
+      sendMessage: (conversationId, text) => {
+        setConversations((list) =>
+          list.map((c) =>
+            c.id === conversationId
+              ? {
+                  ...c,
+                  unread: 0,
+                  messages: [
+                    ...c.messages,
+                    { id: `cm${Date.now()}`, from: "patient", text, time: "Just now" },
+                  ],
+                }
+              : c,
+          ),
+        );
       },
-      compliance,
-      toggleRemind: (id) =>
-        setCompliance((list) => list.map((c) => (c.id === id ? { ...c, remind: !c.remind } : c))),
-      documents,
-      addDocument: (doc) => {
-        const next: AppDocument = {
-          ...doc,
-          id: `doc${Date.now()}`,
-          status: doc.status ?? "pending",
-          uploadedAt: new Date().toISOString().slice(0, 10),
-        };
-        setDocuments((list) => [next, ...list]);
-        if (doc.category) {
-          setCompliance((list) =>
+      startConversation: (providerId, text) => {
+        const existing = conversations.find((c) => c.providerId === providerId);
+        if (existing) {
+          setConversations((list) =>
             list.map((c) =>
-              c.category === doc.category
-                ? { ...c, documentId: next.id, status: "current", detail: "Pending review" }
+              c.id === existing.id
+                ? {
+                    ...c,
+                    messages: [
+                      ...c.messages,
+                      { id: `cm${Date.now()}`, from: "patient", text, time: "Just now" },
+                    ],
+                  }
                 : c,
             ),
           );
+          return existing.id;
         }
-        pushToast("Document submitted");
+        const id = `c${Date.now()}`;
+        const provider = seedProviders.find((p) => p.id === providerId);
+        setConversations((list) => [
+          {
+            id,
+            providerId,
+            department: provider?.specialty ?? "Care team",
+            unread: 0,
+            messages: [{ id: `cm${Date.now()}`, from: "patient", text, time: "Just now" }],
+          },
+          ...list,
+        ]);
+        return id;
       },
-      replaceDocument: (id, name) => {
-        setDocuments((list) => list.map((d) => (d.id === id ? { ...d, name, status: "pending" } : d)));
-        pushToast("Document resubmitted");
-      },
-      removeDocument: (id) => setDocuments((list) => list.filter((d) => d.id !== id)),
-      templates: seedTemplates,
-      forms,
-      submitForm: (record) => {
-        const next: FormRecord = {
-          ...record,
-          id: `f${Date.now()}`,
-          status: "pending",
-          submittedAt: new Date().toISOString().slice(0, 10),
-        };
-        setForms((list) => [next, ...list.filter((f) => f.templateId !== record.templateId || f.status !== "todo")]);
-        pushToast("Form submitted");
+      documents,
+      addDocument: (doc) => {
+        setDocuments((list) => [
+          { ...doc, id: `d${Date.now()}`, date: new Date().toISOString().slice(0, 10) },
+          ...list,
+        ]);
+        pushToast("Document uploaded");
       },
       notifications,
       markAllRead: () => setNotifications((list) => list.map((n) => ({ ...n, read: true }))),
       markNotificationRead: (id) =>
         setNotifications((list) => list.map((n) => (n.id === id ? { ...n, read: true } : n))),
-      activity,
+      dismissNotification: (id) => setNotifications((list) => list.filter((n) => n.id !== id)),
+      bills,
+      payBill: (id, amount) => {
+        setBills((list) =>
+          list.map((b) =>
+            b.id === id
+              ? { ...b, amount: Math.max(0, b.amount - amount), status: amount >= b.amount ? "Paid" : b.status }
+              : b,
+          ),
+        );
+        pushToast("Payment successful");
+      },
+      paymentMethods,
       prefs,
       togglePref: (key) => setPrefs((p) => ({ ...p, [key]: !p[key] })),
       toasts,
@@ -230,16 +257,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dismissToast: (id) => setToasts((t) => t.filter((x) => x.id !== id)),
     };
   }, [
+    hydrated,
     users,
     user,
     onboarded,
-    fieldwork,
-    supervision,
-    compliance,
-    documents,
+    appointments,
+    medications,
     forms,
+    conversations,
+    documents,
     notifications,
-    activity,
+    bills,
+    paymentMethods,
     prefs,
     toasts,
   ]);

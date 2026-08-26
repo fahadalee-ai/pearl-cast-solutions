@@ -10,6 +10,8 @@ export default defineConfig({
     base: PRODUCTION_BASE,
     // Allow the domain to access the preview server (if needed for SSR testing)
     server: {
+        port: 8080,
+        strictPort: false,
         allowedHosts: [
             "demo.sourapps.com",
             "localhost",

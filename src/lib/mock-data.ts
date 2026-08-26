@@ -1,5 +1,3 @@
-export type Role = "rbt" | "bcba" | "field_staff" | "admin";
-
 export type User = {
   id: string;
   firstName: string;
@@ -7,515 +5,516 @@ export type User = {
   email: string;
   phone: string;
   password: string;
-  role: Role;
-  bacbNumber?: string;
+  dob: string;
+  patientId: string;
+  address: string;
+  emergencyName: string;
+  emergencyPhone: string;
 };
 
-export type Supervisor = {
+export type Provider = {
   id: string;
   name: string;
-  credential: string;
+  specialty: string;
   initials: string;
+  rating: number;
+  nextAvailable: string;
 };
 
-export type FieldworkEntry = {
+export type Appointment = {
   id: string;
+  providerId: string;
   date: string;
-  activityType: string;
-  client: string;
-  startTime: string;
-  endTime: string;
-  hours: number;
-  notes: string;
-  status: "pending" | "approved";
+  time: string;
+  type: "In-Person";
+  status: "Confirmed" | "Pending" | "Completed" | "Cancelled";
+  reason: string;
+  location?: string;
+  notes?: string;
 };
 
-export type SupervisionSession = {
-  id: string;
-  date: string;
-  time?: string;
-  startTime?: string;
-  endTime?: string;
-  durationHours: number;
-  sessionType: string;
-  notes: string;
-  topics?: string;
-  supervisorId: string;
-  status: "scheduled" | "requested" | "pending" | "approved";
-};
-
-export type ComplianceItem = {
+export type TreatmentPlan = {
   id: string;
   name: string;
-  status: "current" | "due_soon" | "missing" | "expired";
-  detail: string;
-  expiresAt?: string;
-  documentId?: string;
-  remind: boolean;
-  category: string;
+  status: "On track" | "Needs attention";
+  progress: number;
+};
+
+export type Medication = {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  instructions: string;
+  warnings: string;
+  sideEffects: string;
+  providerId: string;
+  refills: number;
+  active: boolean;
+};
+
+export type FormField = {
+  id: string;
+  label: string;
+  type: "text" | "textarea" | "date" | "select" | "checkbox" | "signature";
+  options?: string[];
+};
+
+export type PatientForm = {
+  id: string;
+  title: string;
+  providerId: string;
+  dueDate: string;
+  status: "Not Started" | "In Progress" | "Submitted";
+  fields: FormField[];
+  values: Record<string, string>;
+};
+
+export type Message = {
+  id: string;
+  from: "patient" | "provider";
+  text: string;
+  time: string;
+};
+
+export type Conversation = {
+  id: string;
+  providerId: string;
+  department: string;
+  unread: number;
+  messages: Message[];
 };
 
 export type AppDocument = {
   id: string;
   name: string;
-  uploadedAt: string;
-  status: "approved" | "pending" | "missing" | "expiring" | "rejected";
-  category: string;
-  expiresAt?: string;
-  previewUrl?: string;
-};
-
-export type FormTemplate = {
-  id: string;
-  name: string;
-  description: string;
-  fields: { id: string; label: string; type: "text" | "textarea" | "date" | "select"; options?: string[] }[];
-};
-
-export type FormRecord = {
-  id: string;
-  templateId: string;
-  name: string;
-  description: string;
-  status: "todo" | "pending" | "approved" | "rejected";
-  submittedAt?: string;
-  values: Record<string, string>;
-  signature?: string;
-  signedName?: string;
+  type: "Lab Results" | "Records" | "Insurance" | "Uploaded by Me";
+  kind: "PDF" | "Image";
+  date: string;
+  size: string;
 };
 
 export type AppNotification = {
   id: string;
-  type: "warning" | "info" | "error";
-  text: string;
+  category: "Appointments" | "Messages" | "Payments" | "Forms";
+  title: string;
+  preview: string;
   time: string;
-  read: boolean;
+  when: "Today" | "Earlier";
   href: string;
+  read: boolean;
 };
 
-export type ActivityItem = {
+export type Bill = {
   id: string;
-  text: string;
-  time: string;
-  tone: "blue" | "orange";
+  providerId: string;
+  service: string;
+  date: string;
+  amount: number;
+  insuranceCovered: number;
+  status: "Due" | "Overdue" | "Paid";
+  items: { label: string; amount: number }[];
 };
 
-export const FIELDWORK_REQUIRED = 80;
-export const SUPERVISION_REQUIRED = 10;
+export type PaymentMethod = {
+  id: string;
+  brand: string;
+  last4: string;
+  exp: string;
+};
 
-export const ACTIVITY_TYPES = [
-  "Direct client session",
-  "Group supervision prep",
-  "Program review",
-  "Independent fieldwork",
-  "Other",
-] as const;
+export type Pharmacy = {
+  id: string;
+  name: string;
+  address: string;
+};
 
-export const SESSION_TYPES = ["Individual", "Group", "Observation"] as const;
+export const seedUser: User = {
+  id: "u1",
+  firstName: "Elena",
+  lastName: "Vasquez",
+  email: "elena@pearlcast.com",
+  phone: "(415) 555-0148",
+  password: "Pearl123",
+  dob: "1988-04-16",
+  patientId: "PCS-18420",
+  address: "428 Magnolia Ave, Oakland, CA 94610",
+  emergencyName: "Luis Vasquez",
+  emergencyPhone: "(415) 555-0190",
+};
 
-export const DOCUMENT_CATEGORIES = [
-  { id: "cpr", label: "CPR certification" },
-  { id: "rbt", label: "BACB RBT certification" },
-  { id: "background", label: "Background check" },
-  { id: "supervision-contract", label: "Supervision contract" },
-  { id: "hipaa", label: "HIPAA training" },
-  { id: "other", label: "Other" },
-] as const;
-
-export const seedUsers: User[] = [
+export const seedProviders: Provider[] = [
   {
-    id: "u1",
-    firstName: "Maya",
-    lastName: "Chen",
-    email: "maya@ontopaba.com",
-    phone: "(303) 555-0142",
-    password: "Training1",
-    role: "rbt",
-    bacbNumber: "RBT-482913",
+    id: "p1",
+    name: "Dr. Amara Patel",
+    specialty: "Family Medicine",
+    initials: "AP",
+    rating: 4.9,
+    nextAvailable: "Tomorrow",
   },
   {
-    id: "u2",
-    firstName: "Rafael",
-    lastName: "Alvarez",
-    email: "rafael@ontopaba.com",
-    phone: "(303) 555-0198",
-    password: "Training1",
-    role: "bcba",
-    bacbNumber: "1-14-16220",
+    id: "p2",
+    name: "Dr. James Okonkwo",
+    specialty: "Cardiology",
+    initials: "JO",
+    rating: 4.8,
+    nextAvailable: "Sep 3",
   },
   {
-    id: "u3",
-    firstName: "Jordan",
-    lastName: "Lee",
-    email: "jordan@ontopaba.com",
-    phone: "(303) 555-0166",
-    password: "Training1",
-    role: "field_staff",
-  },
-  {
-    id: "u-admin",
-    firstName: "Avery",
-    lastName: "Admin",
-    email: "admin@ontopaba.com",
-    phone: "(303) 555-0100",
-    password: "Training1",
-    role: "admin",
+    id: "p3",
+    name: "Dr. Sofia Reyes",
+    specialty: "Behavioral Health",
+    initials: "SR",
+    rating: 4.9,
+    nextAvailable: "Fri",
   },
 ];
 
-export const seedSupervisor: Supervisor = {
-  id: "sup1",
-  name: "Dr. R. Alvarez",
-  credential: "BCBA",
-  initials: "RA",
-};
-
-export const seedFieldwork: FieldworkEntry[] = [
+export const seedAppointments: Appointment[] = [
   {
-    id: "fw1",
-    date: "2026-08-24",
-    activityType: "Direct client session",
-    client: "Client J.M.",
-    startTime: "09:00",
-    endTime: "12:00",
-    hours: 3,
-    notes: "Manding and intraverbal targets. Two new mands independently.",
-    status: "approved",
+    id: "a1",
+    providerId: "p1",
+    date: "2026-08-27",
+    time: "10:00",
+    type: "In-Person",
+    status: "Confirmed",
+    reason: "Follow-up on blood pressure and medication review",
+    location: "Pearl Cast Clinic, Suite 104",
+    notes: "Please have your latest home readings ready.",
   },
   {
-    id: "fw2",
-    date: "2026-08-22",
-    activityType: "Program review",
-    client: "Client A.R.",
-    startTime: "13:00",
-    endTime: "15:00",
-    hours: 2,
-    notes: "Updated probe data and revised prompt fading steps.",
-    status: "approved",
+    id: "a2",
+    providerId: "p2",
+    date: "2026-09-03",
+    time: "14:30",
+    type: "In-Person",
+    status: "Confirmed",
+    reason: "Annual cardiac check-in",
+    location: "Pearl Cast Clinic, Suite 210",
   },
   {
-    id: "fw3",
-    date: "2026-08-20",
-    activityType: "Independent fieldwork",
-    client: "Module 4",
-    startTime: "18:00",
-    endTime: "19:30",
-    hours: 1.5,
-    notes: "Reviewed measurement and graphing modules.",
-    status: "pending",
+    id: "a3",
+    providerId: "p3",
+    date: "2026-08-12",
+    time: "09:15",
+    type: "In-Person",
+    status: "Completed",
+    reason: "Therapy follow-up",
+    location: "Pearl Cast Clinic, Suite 118",
   },
   {
-    id: "fw4",
-    date: "2026-08-18",
-    activityType: "Direct client session",
-    client: "Client J.M.",
-    startTime: "09:30",
-    endTime: "12:30",
-    hours: 3,
-    notes: "NET in playroom; high rates of independent requests.",
-    status: "approved",
+    id: "a4",
+    providerId: "p1",
+    date: "2026-07-28",
+    time: "11:00",
+    type: "In-Person",
+    status: "Completed",
+    reason: "Physical exam",
+    location: "Pearl Cast Clinic, Suite 104",
   },
 ];
 
-export const seedSupervision: SupervisionSession[] = [
+export const seedPlans: TreatmentPlan[] = [
+  { id: "tp1", name: "Hypertension Care", status: "On track", progress: 68 },
+  { id: "tp2", name: "Diabetes Management", status: "Needs attention", progress: 42 },
+];
+
+export const seedMedications: Medication[] = [
   {
-    id: "sv-next",
-    date: "2026-08-29",
-    time: "14:00",
-    durationHours: 1,
-    sessionType: "Individual",
-    notes: "Monthly restricted-hours review",
-    supervisorId: "sup1",
-    status: "scheduled",
+    id: "m1",
+    name: "Lisinopril",
+    dosage: "10 mg",
+    frequency: "Once daily",
+    instructions: "Take with food, once daily in the morning.",
+    warnings: "Stand up slowly if you feel lightheaded. Avoid potassium supplements unless prescribed.",
+    sideEffects: "Dry cough, dizziness, or mild fatigue may occur.",
+    providerId: "p1",
+    refills: 2,
+    active: true,
   },
   {
-    id: "sv1",
-    date: "2026-08-15",
-    startTime: "14:00",
-    endTime: "15:30",
-    durationHours: 1.5,
-    sessionType: "Individual",
-    topics: "Graphing, feedback on session notes",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
+    id: "m2",
+    name: "Metformin",
+    dosage: "500 mg",
+    frequency: "Twice daily",
+    instructions: "Take with breakfast and dinner.",
+    warnings: "Skip a dose if you are fasting for a procedure. Call us for persistent stomach upset.",
+    sideEffects: "Nausea or soft stools are common in the first weeks.",
+    providerId: "p1",
+    refills: 1,
+    active: true,
   },
   {
-    id: "sv2",
-    date: "2026-08-08",
-    startTime: "10:00",
-    endTime: "11:30",
-    durationHours: 1.5,
-    sessionType: "Observation",
-    topics: "Live observation of Client J.M.",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
+    id: "m3",
+    name: "Amoxicillin",
+    dosage: "500 mg",
+    frequency: "Three times daily",
+    instructions: "Completed 7-day course.",
+    warnings: "",
+    sideEffects: "",
+    providerId: "p1",
+    refills: 0,
+    active: false,
+  },
+];
+
+export const seedForms: PatientForm[] = [
+  {
+    id: "f1",
+    title: "New Patient Health History",
+    providerId: "p1",
+    dueDate: "2026-08-27",
+    status: "In Progress",
+    values: { allergies: "Penicillin" },
+    fields: [
+      { id: "reason", label: "Main reason for care", type: "textarea" },
+      { id: "allergies", label: "Allergies", type: "text" },
+      {
+        id: "smoker",
+        label: "Do you smoke?",
+        type: "select",
+        options: ["No", "Yes", "Former"],
+      },
+      { id: "meds", label: "Current medications", type: "textarea" },
+      { id: "consent", label: "I confirm this information is accurate", type: "checkbox" },
+      { id: "sign", label: "Signature", type: "signature" },
+    ],
   },
   {
-    id: "sv3",
-    date: "2026-08-01",
-    startTime: "13:00",
-    endTime: "15:00",
-    durationHours: 2,
-    sessionType: "Individual",
-    topics: "Ethics and documentation",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
+    id: "f2",
+    title: "HIPAA Acknowledgement",
+    providerId: "p1",
+    dueDate: "2026-07-20",
+    status: "Submitted",
+    values: { consent: "yes", sign: "Elena Vasquez" },
+    fields: [
+      { id: "consent", label: "I have read the privacy notice", type: "checkbox" },
+      { id: "sign", label: "Signature", type: "signature" },
+    ],
   },
   {
-    id: "sv4",
-    date: "2026-07-25",
-    startTime: "14:00",
-    endTime: "16:00",
-    durationHours: 2,
-    sessionType: "Group",
-    topics: "Group case review",
-    notes: "",
-    supervisorId: "sup1",
-    status: "approved",
+    id: "f3",
+    title: "PHQ-9 Mood Check-in",
+    providerId: "p3",
+    dueDate: "2026-08-30",
+    status: "Not Started",
+    values: {},
+    fields: [
+      {
+        id: "interest",
+        label: "Little interest or pleasure in doing things",
+        type: "select",
+        options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+      },
+      {
+        id: "down",
+        label: "Feeling down, depressed, or hopeless",
+        type: "select",
+        options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+      },
+      { id: "notes", label: "Anything else we should know?", type: "textarea" },
+    ],
+  },
+];
+
+export const seedConversations: Conversation[] = [
+  {
+    id: "c1",
+    providerId: "p1",
+    department: "Family Medicine",
+    unread: 1,
+    messages: [
+      {
+        id: "cm1",
+        from: "provider",
+        text: "Elena, your latest home readings look improved. Bring them to tomorrow’s visit.",
+        time: "9:12 AM",
+      },
+      {
+        id: "cm2",
+        from: "patient",
+        text: "Thank you — I’ll have the log ready.",
+        time: "9:40 AM",
+      },
+      {
+        id: "cm3",
+        from: "provider",
+        text: "Perfect. We can also review your metformin if mornings are still hard.",
+        time: "10:04 AM",
+      },
+    ],
+  },
+  {
+    id: "c2",
+    providerId: "p3",
+    department: "Behavioral Health",
+    unread: 0,
+    messages: [
+      {
+        id: "cm4",
+        from: "provider",
+        text: "Your PHQ-9 is due this week whenever you have 5 quiet minutes.",
+        time: "Mon",
+      },
+    ],
   },
 ];
 
 export const seedDocuments: AppDocument[] = [
   {
-    id: "doc1",
-    name: "CPR_card_2025.pdf",
-    uploadedAt: "2026-03-12",
-    status: "expiring",
-    category: "cpr",
-    expiresAt: "2026-09-07",
+    id: "d1",
+    name: "Metabolic panel — Aug 2026.pdf",
+    type: "Lab Results",
+    kind: "PDF",
+    date: "2026-08-18",
+    size: "240 KB",
   },
   {
-    id: "doc2",
-    name: "RBT_certificate.pdf",
-    uploadedAt: "2026-01-08",
-    status: "approved",
-    category: "rbt",
-    expiresAt: "2027-01-08",
+    id: "d2",
+    name: "Visit summary — Jul 28.pdf",
+    type: "Records",
+    kind: "PDF",
+    date: "2026-07-28",
+    size: "180 KB",
   },
   {
-    id: "doc3",
-    name: "Background_check.pdf",
-    uploadedAt: "2026-08-20",
-    status: "pending",
-    category: "background",
-  },
-];
-
-export const seedCompliance: ComplianceItem[] = [
-  {
-    id: "c1",
-    name: "CPR certification",
-    status: "due_soon",
-    detail: "Expires in 12 days",
-    expiresAt: "2026-09-07",
-    documentId: "doc1",
-    remind: true,
-    category: "cpr",
+    id: "d3",
+    name: "Insurance card — front.jpg",
+    type: "Insurance",
+    kind: "Image",
+    date: "2026-06-02",
+    size: "1.1 MB",
   },
   {
-    id: "c2",
-    name: "BACB RBT certification",
-    status: "current",
-    detail: "Active",
-    expiresAt: "2027-01-08",
-    documentId: "doc2",
-    remind: true,
-    category: "rbt",
-  },
-  {
-    id: "c3",
-    name: "Background check",
-    status: "current",
-    detail: "Active — pending latest upload",
-    documentId: "doc3",
-    remind: true,
-    category: "background",
-  },
-  {
-    id: "c4",
-    name: "Supervision contract",
-    status: "missing",
-    detail: "Missing document",
-    remind: true,
-    category: "supervision-contract",
-  },
-  {
-    id: "c5",
-    name: "HIPAA training",
-    status: "current",
-    detail: "Active",
-    expiresAt: "2027-02-01",
-    remind: false,
-    category: "hipaa",
-  },
-];
-
-export const seedTemplates: FormTemplate[] = [
-  {
-    id: "ft1",
-    name: "Monthly fieldwork attestation",
-    description: "Confirm restricted and unrestricted hours for the month.",
-    fields: [
-      { id: "month", label: "Month", type: "text" },
-      { id: "restricted", label: "Restricted hours", type: "text" },
-      { id: "unrestricted", label: "Unrestricted hours", type: "text" },
-      { id: "notes", label: "Notes", type: "textarea" },
-    ],
-  },
-  {
-    id: "ft2",
-    name: "Incident report",
-    description: "Document a session incident for supervisor review.",
-    fields: [
-      { id: "date", label: "Date", type: "date" },
-      { id: "client", label: "Client / context", type: "text" },
-      {
-        id: "severity",
-        label: "Severity",
-        type: "select",
-        options: ["Low", "Moderate", "High"],
-      },
-      { id: "summary", label: "What happened", type: "textarea" },
-    ],
-  },
-  {
-    id: "ft3",
-    name: "Supervision agreement",
-    description: "Acknowledge your supervision contract terms.",
-    fields: [
-      { id: "supervisor", label: "Supervisor name", type: "text" },
-      { id: "start", label: "Start date", type: "date" },
-    ],
-  },
-];
-
-export const seedForms: FormRecord[] = [
-  {
-    id: "f-todo",
-    templateId: "ft1",
-    name: "Monthly fieldwork attestation",
-    description: "Confirm restricted and unrestricted hours for the month.",
-    status: "todo",
-    values: {},
-  },
-  {
-    id: "f1",
-    templateId: "ft3",
-    name: "Supervision agreement",
-    description: "Acknowledge your supervision contract terms.",
-    status: "approved",
-    submittedAt: "2026-07-02",
-    values: { supervisor: "Dr. R. Alvarez", start: "2026-07-01" },
-    signedName: "Maya Chen",
-  },
-  {
-    id: "f2",
-    templateId: "ft2",
-    name: "Incident report",
-    description: "Document a session incident for supervisor review.",
-    status: "pending",
-    submittedAt: "2026-08-19",
-    values: {
-      date: "2026-08-18",
-      client: "Client J.M.",
-      severity: "Low",
-      summary: "Client dropped materials; redirected successfully.",
-    },
-    signedName: "Maya Chen",
+    id: "d4",
+    name: "Home BP log.pdf",
+    type: "Uploaded by Me",
+    kind: "PDF",
+    date: "2026-08-20",
+    size: "96 KB",
   },
 ];
 
 export const seedNotifications: AppNotification[] = [
   {
     id: "n1",
-    type: "warning",
-    text: "CPR certification expires in 12 days",
-    time: "2 hours ago",
+    category: "Appointments",
+    title: "Visit with Dr. Patel tomorrow",
+    preview: "In-person visit at 10:00 AM — Pearl Cast Clinic, Suite 104.",
+    time: "1h ago",
+    when: "Today",
+    href: "/appointments/a1",
     read: false,
-    href: "/compliance/c1",
   },
   {
     id: "n2",
-    type: "info",
-    text: "Supervision session Friday at 2:00 PM",
-    time: "Yesterday",
+    category: "Messages",
+    title: "New message from Dr. Patel",
+    preview: "We can also review your metformin if mornings…",
+    time: "2h ago",
+    when: "Today",
+    href: "/messages/c1",
     read: false,
-    href: "/supervision",
   },
   {
     id: "n3",
-    type: "info",
-    text: "Session note approved",
-    time: "2 hours ago",
-    read: true,
-    href: "/fieldwork/fw1",
+    category: "Forms",
+    title: "Health history still in progress",
+    preview: "Finish before tomorrow’s visit.",
+    time: "Yesterday",
+    when: "Earlier",
+    href: "/forms/f1",
+    read: false,
   },
   {
     id: "n4",
-    type: "error",
-    text: "Supervision contract is missing",
-    time: "3 days ago",
-    read: false,
-    href: "/compliance/c4",
+    category: "Payments",
+    title: "Balance due",
+    preview: "$85.00 for your July office visit.",
+    time: "3d ago",
+    when: "Earlier",
+    href: "/payments",
+    read: true,
   },
 ];
 
-export const seedActivity: ActivityItem[] = [
-  { id: "a1", text: "Session note approved", time: "2 hours ago", tone: "blue" },
-  { id: "a2", text: "Fieldwork logged — 3.0 hrs", time: "Yesterday", tone: "orange" },
-  { id: "a3", text: "Supervision signed off", time: "3 days ago", tone: "blue" },
+export const seedBills: Bill[] = [
+  {
+    id: "b1",
+    providerId: "p1",
+    service: "Office visit — physical exam",
+    date: "2026-07-28",
+    amount: 85,
+    insuranceCovered: 140,
+    status: "Due",
+    items: [
+      { label: "Established patient visit", amount: 185 },
+      { label: "Insurance covered", amount: -140 },
+      { label: "Lab draw fee", amount: 40 },
+    ],
+  },
+  {
+    id: "b2",
+    providerId: "p3",
+    service: "Office visit — therapy",
+    date: "2026-08-12",
+    amount: 0,
+    insuranceCovered: 120,
+    status: "Paid",
+    items: [
+      { label: "Behavioral health visit", amount: 120 },
+      { label: "Insurance covered", amount: -120 },
+    ],
+  },
+  {
+    id: "b3",
+    providerId: "p2",
+    service: "Cardiology consult",
+    date: "2026-05-09",
+    amount: 40,
+    insuranceCovered: 210,
+    status: "Overdue",
+    items: [
+      { label: "Specialist consult", amount: 250 },
+      { label: "Insurance covered", amount: -210 },
+    ],
+  },
 ];
 
-export const ONBOARDING = [
-  {
-    title: "Log fieldwork in seconds",
-    body: "Track session hours, activity details, and your progress toward BACB certification requirements — all from your phone.",
-    image:
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1600&q=80",
-    alt: "Clinician working with a child during a session",
-  },
-  {
-    title: "Never miss a supervision session",
-    body: "See your assigned supervisor, schedule sessions, and track supervision hours with built-in sign-off approval.",
-    image:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1600&q=80",
-    alt: "Supervisor reviewing notes with a colleague",
-  },
-  {
-    title: "Compliance made simple",
-    body: "Get reminders before certifications expire and know exactly what's missing — no more last-minute scrambling.",
-    image:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80",
-    alt: "Organized certification documents on a desk",
-  },
-  {
-    title: "Your entire ABA career, organized",
-    body: "Documents, forms, e-signatures, and reports — everything BACB certification requires, always within reach.",
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80",
-    alt: "Professional using a phone to stay organized",
-  },
-] as const;
+export const seedPaymentMethods: PaymentMethod[] = [
+  { id: "pm1", brand: "Visa", last4: "4242", exp: "08/28" },
+  { id: "pm2", brand: "Mastercard", last4: "8811", exp: "01/27" },
+];
 
-export function roleLabel(role: Role) {
-  if (role === "rbt") return "RBT";
-  if (role === "bcba") return "BCBA / Supervisor";
-  if (role === "field_staff") return "Field staff";
-  return "Admin";
+export const seedPharmacies: Pharmacy[] = [
+  { id: "ph1", name: "Pearl Cast Pharmacy", address: "120 Oak St, Oakland, CA" },
+  { id: "ph2", name: "Lakeside CVS", address: "88 Grand Ave, Oakland, CA" },
+];
+
+export const seedInsurance = {
+  provider: "Blue Shield of California",
+  memberId: "XBU18420991",
+  groupNumber: "PCS-4401",
+};
+
+export const TIME_SLOTS = ["08:30", "09:00", "10:00", "11:15", "13:00", "14:30", "16:00"];
+
+export function providerById(id: string, list = seedProviders) {
+  return list.find((p) => p.id === id);
+}
+
+export function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+export function initials(first: string, last: string) {
+  return `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase();
 }
 
 export function formatDate(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
-export function formatDateLong(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-US", {
     weekday: "short",
@@ -538,17 +537,6 @@ export function todayIso() {
   return `${d.getFullYear()}-${m}-${day}`;
 }
 
-export function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
-}
-
-export function initials(first: string, last: string) {
-  return `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase();
-}
-
-export function categoryLabel(id: string) {
-  return DOCUMENT_CATEGORIES.find((c) => c.id === id)?.label ?? id;
+export function money(n: number) {
+  return n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
